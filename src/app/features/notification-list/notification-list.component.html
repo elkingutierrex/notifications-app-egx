@@ -1,0 +1,47 @@
+<div class="notification-container">
+  
+  <!-- Contador: Role="status" ayuda a que los Screen Readers anuncien cambios -->
+  <header class="header">
+    <h2>Bandeja de Notificaciones</h2>
+    <div role="status" aria-live="polite" class="badge" [class.badge-active]="notificationService.unreadCount() > 0">
+      {{ notificationService.unreadCount() }} sin leer
+    </div>
+  </header>
+  
+  <!-- Role="list" e Indicamos Region Relevante Live con 'aria-live' -->
+  <ul role="list" aria-label="Lista de notificaciones" aria-live="polite" class="notification-list">
+    
+    @for (notif of notificationService.notifications(); track notif.id) {
+      
+      <!-- Elemento de la lista, protegemos con directiva showForRole -->
+      <li *appShowForRole="notif.targetRoles || []" 
+          role="listitem" 
+          class="notification-item" 
+          [class.read]="notif.isRead">
+        
+        <div class="content">
+          <p>{{ notif.message }}</p>
+          <small>{{ notif.createdAt | date:'mediumTime' }}</small>
+        </div>
+        
+        @if (!notif.isRead) {
+          <!-- El button nativamente es accesible a Tab. Escuchamos esp/enter explicitamente -->
+          <button 
+            (click)="markAsRead(notif.id)"
+            (keydown)="handleKeydown($event, notif.id)"
+            aria-label="Marcar notificación como leída"
+            title="Marcar notificación como leída"
+            class="btn-read">
+            Marcar como leída
+          </button>
+        }
+      </li>
+      
+    } @empty {
+      <!-- Empty State visual y accesible -->
+      <li role="listitem" class="empty-state">
+         No tienes notificaciones por el momento.
+      </li>
+    }
+  </ul>
+</div>

@@ -1,0 +1,18 @@
+<main class="main-layout">
+  <header class="app-header">
+    <h1>Notifications App</h1>
+    
+    <div class="role-selector">
+      <label for="role-select">Current Role (Testing): </label>
+      <select id="role-select" (change)="changeRole($event)" [value]="authService.userRole()">
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+        <option value="guest">Guest (Ninguno)</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="app-content">
+    <app-notification-list></app-notification-list>
+  </section>
+</main>
