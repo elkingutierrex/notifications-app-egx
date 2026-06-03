@@ -1,50 +1,37 @@
-import { Directive, Input, TemplateRef, ViewContainerRef, OnInit, OnDestroy } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef, effect, inject } from '@angular/core';
 import { AuthService } from '../core/auth.service';
-import { Subscription } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Directive({
   selector: '[appShowForRole]',
   standalone: true
 })
-export class ShowForRoleDirective implements OnInit, OnDestroy {
+export class ShowForRoleDirective {
   private allowedRoles: string[] = [];
   private hasView = false;
-  private roleSubscription?: Subscription;
+
+  private templateRef   = inject(TemplateRef<any>);
+  private viewContainer = inject(ViewContainerRef);
+  private authService   = inject(AuthService);
 
   // Acepta un rol particular o un listado de roles
   @Input() set appShowForRole(roles: string | string[]) {
     this.allowedRoles = Array.isArray(roles) ? roles : [roles];
-    
-    // Si la entrada se actualiza durante la ejecución, revalidamos la vista
+    // Revalidamos de forma inmediata al recibir nuevos roles
     this.updateView(this.authService.userRole());
   }
 
-  constructor(
-    private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef,
-    private authService: AuthService
-  ) {}
-
-  ngOnInit(): void {
-    // 1. Suscripción reactiva a cambios de rol (usando toObservable por compatibilidad signal-rxjs)
-    this.roleSubscription = toObservable(this.authService.userRole).subscribe(role => {
+  constructor() {
+    // effect() se ejecuta dentro del contexto de inyección → sin NG0203.
+    // Se re-ejecuta automáticamente cada vez que userRole Signal cambia.
+    effect(() => {
+      const role = this.authService.userRole();
       this.updateView(role);
     });
   }
 
-  ngOnDestroy(): void {
-    // 2. Limpieza estricta de suscripciones al destruir el componente
-    if (this.roleSubscription) {
-      this.roleSubscription.unsubscribe();
-    }
-  }
-
   private updateView(currentRole: string): void {
-    // Validar si entre los roles permitidos esta el actual
     const isRoleValid = this.allowedRoles.includes(currentRole);
 
-    // Evitar renders innecesarios (solo crea o destruye si cambió de estado boolean)
     if (isRoleValid && !this.hasView) {
       this.viewContainer.createEmbeddedView(this.templateRef);
       this.hasView = true;
