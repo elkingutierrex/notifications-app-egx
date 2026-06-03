@@ -1,46 +1,85 @@
 <div class="notification-container">
   
-  <!-- Contador: Role="status" ayuda a que los Screen Readers anuncien cambios -->
-  <header class="header">
-    <h2>Bandeja de Notificaciones</h2>
-    <div role="status" aria-live="polite" class="badge" [class.badge-active]="notificationService.unreadCount() > 0">
-      {{ notificationService.unreadCount() }} sin leer
+  <!-- Header con contador WCAG -->
+  <header class="notif-header">
+    <div class="notif-title-group">
+      <h2 class="notif-title">Bandeja</h2>
+      <span class="notif-subtitle">de Notificaciones</span>
+    </div>
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="{{ notificationService.unreadCount() }} notificaciones sin leer"
+      class="badge"
+      [class.badge-active]="notificationService.unreadCount() > 0">
+      <span class="badge-count">{{ notificationService.unreadCount() }}</span>
+      <span class="badge-label">sin leer</span>
     </div>
   </header>
   
-  <!-- Role="list" e Indicamos Region Relevante Live con 'aria-live' -->
+  <!-- Lista accesible con aria-live -->
   <ul role="list" aria-label="Lista de notificaciones" aria-live="polite" class="notification-list">
     
     @for (notif of notificationService.notifications(); track notif.id) {
       
-      <!-- Elemento de la lista, protegemos con directiva showForRole -->
-      <li *appShowForRole="notif.targetRoles || []" 
-          role="listitem" 
-          class="notification-item" 
+      <!-- Item con directiva de roles -->
+      <li *appShowForRole="notif.targetRoles || []"
+          role="listitem"
+          class="notification-item"
           [class.read]="notif.isRead">
         
-        <div class="content">
-          <p>{{ notif.message }}</p>
-          <small>{{ notif.createdAt | date:'mediumTime' }}</small>
+        <!-- Punto de status pulsante -->
+        <div class="status-col" aria-hidden="true">
+          @if (!notif.isRead) {
+            <span class="unread-dot">
+              <span class="unread-dot__pulse"></span>
+            </span>
+          } @else {
+            <span class="read-check">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+            </span>
+          }
         </div>
         
+        <!-- Contenido principal -->
+        <div class="content">
+          <p class="content-message">{{ notif.message }}</p>
+          <time class="content-time" [attr.datetime]="notif.createdAt.toISOString()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="11" height="11" aria-hidden="true">
+              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm.01 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/>
+            </svg>
+            {{ notif.createdAt | date:'HH:mm:ss' }}
+          </time>
+        </div>
+        
+        <!-- Acción: marcar como leída -->
         @if (!notif.isRead) {
-          <!-- El button nativamente es accesible a Tab. Escuchamos esp/enter explicitamente -->
-          <button 
+          <button
             (click)="markAsRead(notif.id)"
             (keydown)="handleKeydown($event, notif.id)"
             aria-label="Marcar notificación como leída"
-            title="Marcar notificación como leída"
+            title="Marcar como leída"
             class="btn-read">
-            Marcar como leída
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+            </svg>
+            <span>Leída</span>
           </button>
         }
       </li>
       
     } @empty {
-      <!-- Empty State visual y accesible -->
+      <!-- Empty State con ícono SVG -->
       <li role="listitem" class="empty-state">
-         No tienes notificaciones por el momento.
+        <div class="empty-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </div>
+        <p class="empty-title">Sin notificaciones</p>
+        <p class="empty-sub">Las nuevas alertas aparecerán aquí en tiempo real.</p>
       </li>
     }
   </ul>
