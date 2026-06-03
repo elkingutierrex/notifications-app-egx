@@ -1,15 +1,43 @@
 <main class="main-layout">
-  <header class="app-header">
-    <h1>Notifications App</h1>
-    
+  <header class="app-header" role="banner">
+
+    <!-- Marca -->
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="26" height="26">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+      </div>
+      <h1 class="brand-title">
+        Notifications<span class="brand-accent">EGX</span>
+      </h1>
+      @if (authService && notifService) {
+        <span
+          role="status"
+          aria-live="polite"
+          aria-label="{{ notifService.unreadCount() }} notificaciones sin leer"
+          class="header-badge"
+          [class.header-badge--active]="notifService.unreadCount() > 0">
+          {{ notifService.unreadCount() }}
+        </span>
+      }
+    </div>
+
+    <!-- Selector de rol -->
     <div class="role-selector">
-      <label for="role-select">Current Role (Testing): </label>
+      <label for="role-select" class="role-label">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-hidden="true">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+        </svg>
+        Rol activo
+      </label>
       <select id="role-select" (change)="changeRole($event)" [value]="authService.userRole()">
-        <option value="admin">Admin</option>
-        <option value="user">User</option>
-        <option value="guest">Guest (Ninguno)</option>
+        <option value="admin">👑 Admin</option>
+        <option value="user">👤 User</option>
+        <option value="guest">🔒 Guest</option>
       </select>
     </div>
+
   </header>
 
   <section class="app-content">
