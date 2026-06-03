@@ -1,12 +1,20 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { NotificationListComponent } from './features/notification-list/notification-list.component';
+import { AuthService } from './core/auth.service';
+import { NotificationService } from './infrastructure/notification.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [NotificationListComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('notifications-app-egx');
+  authService  = inject(AuthService);
+  notifService = inject(NotificationService);
+
+  changeRole(event: Event): void {
+    const selector = event.target as HTMLSelectElement;
+    this.authService.setRole(selector.value);
+  }
 }
