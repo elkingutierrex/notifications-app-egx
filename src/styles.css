@@ -1,1 +1,97 @@
-/* You can add global styles to this file, and also import other style files */
+/* =====================================================
+   DESIGN TOKENS – notifications-app-egx
+   ===================================================== */
+:root {
+  /* Paleta principal */
+  --color-bg:            #080c14;
+  --color-bg-glass:      rgba(255, 255, 255, 0.04);
+  --color-bg-card:       rgba(255, 255, 255, 0.055);
+  --color-bg-card-read:  rgba(255, 255, 255, 0.015);
+  --color-border:        rgba(255, 255, 255, 0.08);
+  --color-border-accent: rgba(99, 102, 241, 0.5);
+
+  /* Acento indigo/purple */
+  --color-accent:        #6366f1;
+  --color-accent-light:  #818cf8;
+  --color-accent-dark:   #4f46e5;
+  --color-accent-glow:   rgba(99, 102, 241, 0.35);
+
+  /* Texto */
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted:     #64748b;
+
+  /* Status */
+  --color-success:  #34d399;
+  --color-warning:  #fbbf24;
+  --color-danger:   #f87171;
+
+  /* Radios */
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-xl:  28px;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,0.6);
+  --shadow-accent: 0 0 20px rgba(99,102,241,0.25);
+
+  /* Fuente */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Transiciones */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+}
+
+/* =====================================================
+   CSS RESET
+   ===================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+
+  /* Gradiente animado aurora de fondo */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,  rgba(139, 92, 246, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,  rgba(16, 185, 129, 0.04) 0%, transparent 70%);
+  background-attachment: fixed;
+}
+
+/* =====================================================
+   SCROLLBAR OSCURO
+   ===================================================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.4);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.7); }
+
+/* =====================================================
+   UTILIDADES GLOBALES
+   ===================================================== */
+button { font-family: var(--font-sans); cursor: pointer; }
